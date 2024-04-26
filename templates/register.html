@@ -3,10 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Room</title>
+    <title>Register</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
-    <h1>Chat Room</h1>
-    <!-- Chat room interface will go here -->
+    <h1>Register</h1>
+    <form method="post">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.username.label }} <br>
+            {{ form.username(size=32) }} <br>
+            {% for error in form.username.errors %}
+                <span style="color: red;">{{ error }}</span><br>
+            {% endfor %}
+        </div>
+        <div class="g-recaptcha" data-sitekey="{{ app.config['RECAPTCHA_PUBLIC_KEY'] }}"></div>
+        <button type="submit">Register</button>
+    </form>
 </body>
 </html>

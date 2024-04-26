@@ -5,9 +5,9 @@ from wtforms.validators import DataRequired
 import uuid
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'
-app.config['RECAPTCHA_PUBLIC_KEY'] = 'your_recaptcha_public_key_here'
-app.config['RECAPTCHA_PRIVATE_KEY'] = 'your_recaptcha_private_key_here'
+app.secret_key = 'lockednoneofyourbussinesskey'
+app.config['RECAPTCHA_PUBLIC_KEY'] = '6LcPVcgpAAAAANYZd4RbGwzqgiHo5-TIb_BUReHk'
+app.config['RECAPTCHA_PRIVATE_KEY'] = '6LcPVcgpAAAAAMgxfE7xUpn9REVXTLhKiyKRLBEz'
 
 # Generate a random user ID for each session
 def generate_user_id():
