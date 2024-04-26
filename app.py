@@ -49,6 +49,22 @@ def chat_room():
     else:
         return redirect(url_for('register'))
 
+@app.route('/create_room', methods=['GET', 'POST'])
+def create_room():
+    if request.method == 'POST':
+        # Retrieve room details from form submission
+        room_name = request.form.get('room_name')
+        room_description = request.form.get('room_description')
+        
+        # Process the creation of the room (e.g., store details in database)
+        # For demonstration, we'll just print the room details
+        print(f"New Chat Room Created: Name - {room_name}, Description - {room_description}")
+        
+        # Redirect to the explore page after room creation
+        return redirect(url_for('explore'))
+    
+    # Render the form for creating a new room
+    return render_template('create_room.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
