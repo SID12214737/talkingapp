@@ -30,3 +30,25 @@ socket.on('chat message', (message) => {
     // Scroll to the bottom of the chat window
     chatWindow.scrollTop = chatWindow.scrollHeight;
 });
+
+// Import the simple-peer library
+const SimplePeer = require('simple-peer');
+
+// Create a new instance of SimplePeer
+const peer = new SimplePeer({ initiator: true });
+
+// Event listener for when a connection is established
+peer.on('connect', () => {
+    console.log('Connection established!');
+    // Now you can start sending audio/video data
+});
+
+// Event listener for when data is received
+peer.on('data', (data) => {
+    console.log('Received data:', data);
+});
+
+// Event listener for when the connection is closed
+peer.on('close', () => {
+    console.log('Connection closed');
+});
