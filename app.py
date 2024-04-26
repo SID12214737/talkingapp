@@ -7,13 +7,14 @@ app.secret_key = 'your_secret_key_here'
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        # Verify reCAPTCHA token
-        token = request.form.get('g-recaptcha-response')
-        if token:
+        # Verify reCAPTCHA response
+        recaptcha_response = request.form.get('g-recaptcha-response')
+        if recaptcha_response:
+            # Verify reCAPTCHA response with Google
             response = requests.post('https://www.google.com/recaptcha/api/siteverify', 
-                                     data={'secret': 'your_secret_key_here', 'response': token})
+                                     data={'secret': 'your_secret_key_here', 'response': recaptcha_response})
             data = response.json()
-            if data['success'] and data['score'] >= 0.5:
+            if data['success']:
                 # reCAPTCHA verification successful
                 # Process registration here
                 session['registered'] = True
@@ -23,8 +24,8 @@ def register():
                 error_message = 'reCAPTCHA verification failed. Please try again.'
                 return render_template('register.html', error_message=error_message)
         else:
-            # No reCAPTCHA token found
-            error_message = 'reCAPTCHA token missing. Please try again.'
+            # No reCAPTCHA response provided
+            error_message = 'reCAPTCHA verification failed. Please try again.'
             return render_template('register.html', error_message=error_message)
     return render_template('register.html')
 
