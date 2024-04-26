@@ -4,6 +4,19 @@ import requests
 app = Flask(__name__)
 app.secret_key = '6LfSZsgpAAAAAPCw8BEG2NoYDneC2b0RbLppBuDv'
 
+@app.route('/')
+def index():
+    if 'registered' in session and session['registered']:
+        return redirect(url_for('explore'))
+    else:
+        return redirect(url_for('register'))
+    
+
+@app.route('/explore')
+def explore():
+    return render_template('explore.html')
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -18,7 +31,7 @@ def register():
                 # reCAPTCHA verification successful
                 # Process registration here
                 session['registered'] = True
-                return redirect(url_for('chat_room'))
+                return redirect(url_for('explore'))
             else:
                 # reCAPTCHA verification failed
                 error_message = 'reCAPTCHA verification failed. Please try again.'
