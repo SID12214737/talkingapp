@@ -1,9 +1,38 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 import requests
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = '6LfSZsgpAAAAAPCw8BEG2NoYDneC2b0RbLppBuDv'
 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chat_platform.db'  # SQLite database file path
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable SQLAlchemy event system to suppress warning
+db = SQLAlchemy(app)
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), unique=True, nullable=False)
+    # Add more user fields as needed
+
+class ChatRoom(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    creator = db.relationship('User', backref=db.backref('created_rooms', lazy=True))
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    room_id = db.Column(db.Integer, db.ForeignKey('chat_room.id'), nullable=False)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    sent_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    
 @app.route('/')
 def index():
     if 'registered' in session and session['registered']:
