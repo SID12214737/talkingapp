@@ -9,6 +9,9 @@
 <body>
     <h1>Register</h1>
     <form method="post">
+        <form method="post">
+            {{ form.hidden_tag() }}
+            {{ form.username.label }} {{ form.username(size=20) }}        
         <form action="?" method="POST">
             <div class="g-recaptcha" data-sitekey="6LfSZsgpAAAAAJ1N_BhqxGnj4eljIHTU9PypAaMW"></div>
             <br/>
