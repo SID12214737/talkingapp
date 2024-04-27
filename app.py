@@ -32,7 +32,7 @@ class Message(db.Model):
     content = db.Column(db.Text, nullable=False)
     sent_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    
+
 @app.route('/')
 def index():
     if 'registered' in session and session['registered']:
@@ -48,6 +48,7 @@ def explore():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    
     if request.method == 'POST':
         # Verify reCAPTCHA response
         recaptcha_response = request.form.get('g-recaptcha-response')
@@ -94,6 +95,19 @@ def create_room():
     
     # Render the form for creating a new room
     return render_template('create_room.html')
+
+from flask import redirect, url_for, make_response
+
+@app.route('/logout')
+def logout():
+    # Create a response object
+    response = make_response(redirect(url_for('register')))
+
+    # Delete the authentication token or session identifier cookie
+    response.delete_cookie('auth_token')
+
+    return response
+
 
 if __name__ == '__main__':
     app.run(debug=True)
