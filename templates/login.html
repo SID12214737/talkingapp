@@ -7,13 +7,29 @@
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
-    <h1>Register</h1>
-    <form method="post">
-            <form action="?" method="POST">
-            <div class="g-recaptcha" data-sitekey="6LfSZsgpAAAAAJ1N_BhqxGnj4eljIHTU9PypAaMW"></div>
-            <br/>
-            <input type="submit" value="Submit">
-          </form>
-    </form>
+    <div class="Card">
+        <div class="container CardInner">
+            <form action="/login" method="POST">
+                <h1>Login</h1>
+                {% if error %}
+                <p style="color: red;">{{ error }}</p>
+                {% endif %}
+                <label for="username">Username:</label>
+                <input class="InputContainer" type="text" name="username" id="username" required>
+                <br>
+                <label for="password">Password:</label>
+                <input type="password" name="password" id="password" required>
+                <br>
+                <form action="?" method="POST">
+                    <div class="g-recaptcha" data-sitekey="6LfSZsgpAAAAAJ1N_BhqxGnj4eljIHTU9PypAaMW"></div>
+                    <br/>
+                  </form>
+                <div class="button-container">
+                    <button type="submit">Login</button>
+                    <button type="button" onclick="redirectToRegister()">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
