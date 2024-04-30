@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = '6LfSZsgpAAAAAPCw8BEG2NoYDneC2b0RbLppBuDv'
+app.secret_key = 'noneofyourbussinesskey'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chat_platform.db'  # SQLite database file path
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable SQLAlchemy event system to suppress warning
