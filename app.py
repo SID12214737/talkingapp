@@ -12,25 +12,34 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable SQLAlchemy event
 db = SQLAlchemy(app)
 
 
-class User(db.Model):
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+
+# Initialize Flask application and SQLAlchemy
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chat_platform.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+# Define database models
+class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100), unique=True, nullable=False)
-    # Add more user fields as needed
+    room_id = db.Column(db.Integer, nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    sent_at = db.Column(db.DateTime, default=datetime.utcnow)
+    parent_id = db.Column(db.Integer, nullable=True)
 
 class ChatRoom(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    creator = db.relationship('User', backref=db.backref('created_rooms', lazy=True))
+    token = db.Column(db.String(100), nullable=False)  # Assuming token is used for WebRTC
 
-class Message(db.Model):
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    room_id = db.Column(db.Integer, db.ForeignKey('chat_room.id'), nullable=False)
-    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    sent_at = db.Column(db.DateTime, default=datetime.utcnow)
+    u_name = db.Column(db.String(100), nullable=False)
+    token = db.Column(db.String(100), nullable=False)
+    vip = db.Column(db.Boolean, nullable=False)  
 
 
 @app.route('/')
@@ -38,7 +47,7 @@ def index():
     if 'registered' in session and session['registered']:
         return redirect(url_for('explore'))
     else:
-        return redirect(url_for('register'))
+        return redirect(url_for('login'))
     
 
 @app.route('/explore')
@@ -48,6 +57,11 @@ def explore():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    pass
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
     
     if request.method == 'POST':
         # Verify reCAPTCHA response
@@ -65,19 +79,19 @@ def register():
             else:
                 # reCAPTCHA verification failed
                 error_message = 'reCAPTCHA verification failed. Please try again.'
-                return render_template('register.html', error_message=error_message)
+                return render_template('login.html', error_message=error_message)
         else:
             # No reCAPTCHA response provided
             error_message = 'reCAPTCHA verification failed. Please try again.'
-            return render_template('register.html', error_message=error_message)
-    return render_template('register.html')
+            return render_template('login.html', error_message=error_message)
+    return render_template('login.html')
 
 @app.route('/chat_room')
 def chat_room():
     if 'registered' in session and session['registered']:
         return render_template('chat_room.html')
     else:
-        return redirect(url_for('register'))
+        return redirect(url_for('login'))
 
 @app.route('/create_room', methods=['GET', 'POST'])
 def create_room():
@@ -101,7 +115,7 @@ from flask import redirect, url_for, make_response
 @app.route('/logout')
 def logout():
     # Create a response object
-    response = make_response(redirect(url_for('register')))
+    response = make_response(redirect(url_for('login')))
 
     # Delete the authentication token or session identifier cookie
     response.delete_cookie('auth_token')
